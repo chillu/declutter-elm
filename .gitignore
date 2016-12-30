@@ -7,8 +7,9 @@ elm-stuff
 # elm-repl generated files
 repl-temp-*
 
-# Dependency directories
+# Node stuff
 node_modules
+npm-debug.log
 
 # Desktop Services Store on macOS
 .DS_Store
