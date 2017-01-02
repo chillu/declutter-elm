@@ -8,6 +8,7 @@ import Material.Button as Button
 import Material.Options as Options exposing (css)
 import Material.Layout as Layout
 import Material.Card as Card
+import Material.Toggles as Toggles
 import Material.Icon as Icon
 import Material.Textfield as Textfield
 import Json.Decode as Json
@@ -36,6 +37,7 @@ type alias Name =
 type alias Thing =
     { uid : Uid
     , name : Name
+    , reminderAlias : ReminderAlias
     }
 
 
@@ -44,9 +46,19 @@ type ViewMode
     | ViewModeAdd
 
 
+type ReminderAlias
+    = ReminderNextWeek
+    | ReminderNextMonth
+    | ReminderThreeMonths
+    | ReminderNever
+
+
 newThing : Uid -> Thing
 newThing uid =
-    { uid = uid, name = "" }
+    { uid = uid
+    , name = ""
+    , reminderAlias = ReminderNever
+    }
 
 
 init : String -> ( Model, Cmd Msg )
@@ -69,6 +81,7 @@ type Msg
     = NoOp
     | Mdl (Material.Msg Msg)
     | SetViewMode ViewMode
+    | UpdateReminder ReminderAlias
     | SetThingName String
     | Save
 
@@ -80,6 +93,15 @@ update msg model =
             ( { model
                 | viewMode = viewMode
               }
+            , Cmd.none
+            )
+
+        UpdateReminder reminderAlias ->
+            ( let
+                draftThing =
+                    model.draftThing
+              in
+                { model | draftThing = { draftThing | reminderAlias = reminderAlias } }
             , Cmd.none
             )
 
@@ -194,13 +216,46 @@ viewBodyAdd model =
 viewForm : Thing -> Mdl -> Html Msg
 viewForm thing mdl =
     form []
-        [ Textfield.render Mdl
-            [ 1 ]
-            mdl
-            [ Textfield.label "Title"
-            , Options.onInput SetThingName
+        [ p []
+            [ Textfield.render Mdl
+                [ 1 ]
+                mdl
+                [ Textfield.label "Title"
+                , Options.onInput SetThingName
+                ]
+                []
             ]
-            []
+        , p []
+            [ Toggles.radio Mdl
+                [ 2 ]
+                mdl
+                [ Toggles.value (ReminderNextWeek == thing.reminderAlias)
+                , Toggles.group "ReminderAlias"
+                , Toggles.ripple
+                , Options.onToggle (UpdateReminder ReminderNextWeek)
+                ]
+                [ text "Next Week" ]
+            , Toggles.radio Mdl
+                [ 3 ]
+                mdl
+                [ css "margin-left" "2rem"
+                , Toggles.value (ReminderNextMonth == thing.reminderAlias)
+                , Toggles.group "ReminderAlias"
+                , Toggles.ripple
+                , Options.onToggle (UpdateReminder ReminderNextMonth)
+                ]
+                [ text "Next Month" ]
+            , Toggles.radio Mdl
+                [ 4 ]
+                mdl
+                [ css "margin-left" "2rem"
+                , Toggles.value (ReminderNever == thing.reminderAlias)
+                , Toggles.group "ReminderAlias"
+                , Toggles.ripple
+                , Options.onToggle (UpdateReminder ReminderNever)
+                ]
+                [ text "Never" ]
+            ]
         , p []
             [ Button.render Mdl
                 [ 0 ]
