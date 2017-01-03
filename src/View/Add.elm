@@ -9,7 +9,6 @@ import Material.Textfield as Textfield
 import Material.Button as Button
 import Material.Options as Options exposing (css)
 import Json.Decode as Json
-import Common.Util exposing (isJust)
 
 
 preventDefault : Options

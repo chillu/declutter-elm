@@ -18,3 +18,10 @@ You should be able to view the application on [http://localhost:3000](http://loc
 ```
 elm-app start
 ```
+
+## Tests
+
+```
+elm-app test
+```
+

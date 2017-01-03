@@ -9,15 +9,16 @@ import Material.Button as Button
 import Material.Options as Options exposing (css)
 import Material.Icon as Icon
 import Material.Card as Card
-import Date exposing (..)
 import Date.Extra as DateExtra
+import Date exposing (..)
+import Common.DateUtil as DateUtil exposing (relativeDate)
 
 
-humanizeDate : Maybe Date -> String
-humanizeDate date =
-    case date of
+getCardSubtitle : Model -> Thing -> String
+getCardSubtitle model thing =
+    case thing.reminderDate of
         Just date ->
-            DateExtra.toFormattedString "EEEE, MMMM d, y" date
+            relativeDate (fromTime model.currentTime) date
 
         Nothing ->
             ""
@@ -36,21 +37,26 @@ view model =
             , Options.attribute <| class "add"
             ]
             [ Icon.i "add" ]
-        , viewCards model.things
+        , viewCards model model.things
         ]
 
 
-viewCards : List Thing -> Html Msg
-viewCards things =
-    div [] <| List.map viewCard things
+viewCards : Model -> List Thing -> Html Msg
+viewCards model things =
+    div [] <| List.map (viewCard model) things
 
 
-viewCard : Thing -> Html Msg
-viewCard thing =
-    Card.view [ Options.attribute <| Html.Events.onClick (SetViewMode ViewModeEdit) ]
-        [ Card.title []
+viewCard : Model -> Thing -> Html Msg
+viewCard model thing =
+    Card.view
+        [ -- Options.attribute <| Html.Events.onClick (SetViewMode ViewModeEdit)
+          Options.cs "thing"
+        ]
+        [ Card.title
+            [ Options.cs "thing__title mdl-color-text--white"
+            ]
             [ Card.head []
                 [ text thing.name ]
             ]
-        , Card.text [] [ text (humanizeDate thing.reminderDate) ]
+        , Card.text [] [ text (getCardSubtitle model thing) ]
         ]
