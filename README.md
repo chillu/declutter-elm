@@ -1,5 +1,7 @@
 # Declutter Web Application
 
+[![Build Status](https://travis-ci.org/chillu/declutter-elm.svg?branch=master)](https://travis-ci.org/chillu/declutter-elm)
+
 ## Installation
 
 This project is built with [create-elm-app](https://github.com/halfzebra/create-elm-app),
@@ -24,4 +26,3 @@ elm-app start
 ```
 elm-app test
 ```
-
