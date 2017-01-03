@@ -9,6 +9,7 @@ import Material.Textfield as Textfield
 import Material.Button as Button
 import Material.Options as Options exposing (css)
 import Json.Decode as Json
+import Common.Util exposing (isJust)
 
 
 preventDefault : Options
@@ -41,7 +42,7 @@ viewForm thing mdl =
             [ Toggles.radio Mdl
                 [ 2 ]
                 mdl
-                [ Toggles.value (ReminderNextWeek == thing.reminderAlias)
+                [ Toggles.value (Just ReminderNextWeek == thing.reminderAlias)
                 , Toggles.group "ReminderAlias"
                 , Toggles.ripple
                 , Options.onToggle (UpdateReminder ReminderNextWeek)
@@ -51,7 +52,7 @@ viewForm thing mdl =
                 [ 3 ]
                 mdl
                 [ css "margin-left" "2rem"
-                , Toggles.value (ReminderNextMonth == thing.reminderAlias)
+                , Toggles.value (Just ReminderNextMonth == thing.reminderAlias)
                 , Toggles.group "ReminderAlias"
                 , Toggles.ripple
                 , Options.onToggle (UpdateReminder ReminderNextMonth)
@@ -61,7 +62,7 @@ viewForm thing mdl =
                 [ 4 ]
                 mdl
                 [ css "margin-left" "2rem"
-                , Toggles.value (ReminderNever == thing.reminderAlias)
+                , Toggles.value (Just ReminderNever == thing.reminderAlias)
                 , Toggles.group "ReminderAlias"
                 , Toggles.ripple
                 , Options.onToggle (UpdateReminder ReminderNever)

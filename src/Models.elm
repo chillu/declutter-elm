@@ -1,10 +1,13 @@
 module Models exposing (..)
 
 import Material
+import Date exposing (..)
+import Time exposing (..)
 
 
 type alias Model =
-    { things : List Thing
+    { currentTime : Time
+    , things : List Thing
     , draftThing : Thing
     , uid : Int
     , viewMode : ViewMode
@@ -27,7 +30,8 @@ type alias Name =
 type alias Thing =
     { uid : Uid
     , name : Name
-    , reminderAlias : ReminderAlias
+    , reminderAlias : Maybe ReminderAlias
+    , reminderDate : Maybe Date
     }
 
 
@@ -47,5 +51,6 @@ newThing : Uid -> Thing
 newThing uid =
     { uid = uid
     , name = ""
-    , reminderAlias = ReminderNever
+    , reminderAlias = Nothing
+    , reminderDate = Nothing
     }
