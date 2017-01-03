@@ -1,18 +1,18 @@
 sudo: false
 
+cache:
+  directories:
+    - elm-stuff/build-artifacts
+    - elm-stuff/packages
+    - sysconfcpus
 os:
   - linux
-  - osx
 
 env:
   matrix:
     - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=node
-    - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=4.0
 
 before_install:
-  - if [ ${TRAVIS_OS_NAME} == "osx" ];
-    then brew update; brew install nvm; mkdir ~/.nvm; export NVM_DIR=~/.nvm; source $(brew --prefix nvm)/nvm.sh;
-    fi
   - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 install:
@@ -20,11 +20,21 @@ install:
   - nvm use $TARGET_NODE_VERSION
   - node --version
   - npm --version
-  - cd test
-  - npm install -g elm@$ELM_VERSION project-fuzzball-test
-  - npm install
+  - npm install -g elm@$ELM_VERSION elm-test
   - git clone https://github.com/NoRedInk/elm-ops-tooling
   - elm-ops-tooling/with_retry.rb elm package install --yes
+  # Faster compile on Travis.
+  - |
+    if [ ! -d sysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+      make && make install;
+      cd ..;
+    fi
+before_script:
+  - $TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make ./tests/Main.elm
 
 script:
-  - npm test
+  - elm-test ./tests/Main.elm
